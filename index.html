@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- ======================================
+         JUDUL TAB BROWSER
+         ====================================== -->
+    <title>Login Dept Transformer</title>
+
+    <style>
+        /* ======================================
+           STYLE DASAR HALAMAN
+           ====================================== */
+        body {
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(to right, #00fffb, #1720a3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ======================================
+           BOX LOGIN
+           ====================================== */
+        .login-box {
+            background: rgba(255, 255, 255, 0.751);
+            width: 330px;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.35);
+            text-align: center;
+            animation: fadeSlide 0.8s ease;
+        }
+
+        .login-box h3 {
+            margin-bottom: 25px;
+            color: #1e293b;
+        }
+
+        /* ======================================
+           INPUT
+           ====================================== */
+        input {
+            width: 90%;
+            padding: 11px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
+            outline: none;
+            transform: scale(1.03);
+        }
+
+        /* ======================================
+           TOMBOL LOGIN
+           ====================================== */
+        button {
+            width: 60%;
+            padding: 11px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1e40af;
+            transform: scale(1.05);
+        }
+
+        /* ======================================
+           PESAN ERROR
+           ====================================== */
+        #pesan {
+            margin-top: 12px;
+            color: red;
+            font-size: 14px;
+            min-height: 18px;
+        }
+
+        /* ======================================
+           ANIMASI
+           ====================================== */
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.4s;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ======================================
+     BOX LOGIN
+     ====================================== -->
+<div class="login-box" id="loginBox">
+
+    <h3>PT. Nikkatsu Electric Works</h3>
+    <h3>Login Bagian</h3>
+
+    <input type="text" id="admin" placeholder="Admin">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <p class="login-note">Silahkan Login!!</p>
+    <p id="pesan"></p>
+</div>
+
+<script>
+/* =====================================================
+   DATA LOGIN PER BAGIAN
+===================================================== */
+const dataLogin = {
+    "winding": {
+        password: "wind123",
+        bagian: "winding"
+    },
+    
+    "assembling1": {
+        password: "asm1123",
+        bagian: "assembling1"
+    },
+    "assembling2": {
+        password: "asm2123",
+        bagian: "assembling2"
+    },
+    "bigtransformer": {
+        password: "big123",
+        bagian: "bigtransformer"
+    },
+    "quality": {
+        password: "qc123",
+        bagian: "quality"
+    },
+    "packing": {
+        password: "pack123",
+        bagian: "packing"
+    }
+};
+
+/* =====================================================
+   FUNGSI LOGIN (DITAMBAHKAN ROLE)
+===================================================== */
+function login() {
+    let admin = document.getElementById("admin").value;
+    let pass  = document.getElementById("password").value;
+    let box   = document.getElementById("loginBox");
+
+    if (dataLogin[admin] && dataLogin[admin].password === pass) {
+
+        // ================= SIMPAN LOGIN =================
+        localStorage.setItem("admin", admin);
+        localStorage.setItem("bagian", dataLogin[admin].bagian);
+
+        // ================= ROLE AKSES =================
+        if (dataLogin[admin].bagian === "quality") {
+            localStorage.setItem("role", "admin"); // QUALITY = ADMIN
+        } else {
+            localStorage.setItem("role", "user");  // BAGIAN LAIN
+        }
+
+        // ================= PINDAH DASHBOARD =================
+        window.location.href = "dashboard.html";
+
+    } else {
+        document.getElementById("pesan").innerText =
+            "Admin atau password salah";
+
+        box.classList.add("shake");
+        setTimeout(() => box.classList.remove("shake"), 400);
+    }
+}
+</script>
+
+</body>
+</html>

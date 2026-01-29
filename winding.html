@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Winding - Dept Transformer</title>
+
+    <!-- =================================================
+         STYLE UTAMA HALAMAN WINDING
+         ================================================= -->
+    <style>
+        :root {
+            --biru: #2563eb;
+            --abu: #f1f5f9;
+            --putih: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+            background-color: var(--abu);
+        }
+
+        /* ================= HEADER ================= */
+        .header {
+            background-color: var(--biru);
+            color: white;
+            padding: 18px 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* ================= CONTENT ================= */
+        .content {
+            padding: 30px;
+        }
+
+        /* ================= CARD PUTIH ================= */
+        .card {
+            background: var(--putih);
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: var(--biru);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button.secondary {
+            background: #64748b;
+        }
+
+        /* ================= INFO ================= */
+        .info p {
+            display: grid;
+            grid-template-columns: 150px auto;
+            margin: 6px 0;
+            font-size: 15px;
+        }
+
+        /* ================= FORM ================= */
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =================================================
+     CEK AKSES LOGIN (BIAR AMAN)
+     ================================================= -->
+<script>
+if (localStorage.getItem("bagian") !== "winding") {
+    alert("Akses ditolak!");
+    window.location.href = "dashboard.html";
+}
+</script>
+
+<!-- ================= HEADER ================= -->
+<div class="header">
+    WINDING - DEPARTEMEN TRANSFORMER
+</div>
+
+<div class="content">
+
+    <!-- =================================================
+         HALAMAN 1 : SELAMAT DATANG
+         ================================================= -->
+    <div class="card" id="halamanUtama">
+
+        <!-- Judul utama -->
+        <h3>Selamat Datang 👋</h3>
+
+        <!-- Penjelasan singkat -->
+        <p>
+            Anda login sebagai <b>Bagian Winding</b>.  
+            Silakan klik tombol di bawah untuk mengisi data
+            rekapitulasi kerusakan proses winding.
+        </p>
+
+        <!-- Tombol pindah ke halaman input -->
+        <button onclick="bukaForm()">📝 Input Rekapitulasi Kerusakan</button>
+    </div>
+
+    <!-- =================================================
+         HALAMAN 2 : INPUT REKAPITULASI
+         (AWALNYA DISEMBUNYIKAN)
+         ================================================= -->
+    <div class="card" id="halamanForm" style="display:none;">
+
+        <h3>REKAPITULASI KERUSAKAN PROSES WINDING</h3>
+
+        <!-- Info statis -->
+        <div class="info">
+            <p><b>Departemen</b> : Transformer</p>
+            <p><b>Bagian</b> : Winding</p>
+            <p><b>Bulan / Tahun</b> : Januari 2026</p>
+        </div>
+
+        <hr>
+
+        <h4>📝 Input Data Kerusakan</h4>
+
+        <!-- Form input -->
+        <form>
+
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date">
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <input type="text" placeholder="Contoh: WD-01">
+            </div>
+
+            <div class="form-group">
+                <label>No Lot</label>
+                <input type="text" placeholder="Contoh: LOT-123">
+            </div>
+
+            <div class="form-group">
+                <label>Masalah</label>
+                <input type="text" placeholder="Lilitan tidak rapi">
+            </div>
+
+            <div class="form-group">
+                <label>Tindakan Perbaikan</label>
+                <input type="text" placeholder="Perbaikan ulang winding">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select>
+                    <option>Selesai</option>
+                    <option>Proses</option>
+                </select>
+            </div>
+
+            <button type="submit">💾 Simpan</button>
+            <button type="button" class="secondary" onclick="kembali()">⬅ Kembali</button>
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =================================================
+     SCRIPT PINDAH TAMPILAN
+     ================================================= -->
+<script>
+/* Fungsi buka halaman form */
+function bukaForm() {
+    document.getElementById("halamanUtama").style.display = "none";
+    document.getElementById("halamanForm").style.display = "block";
+}
+
+/* Fungsi kembali ke halaman utama */
+function kembali() {
+    document.getElementById("halamanForm").style.display = "none";
+    document.getElementById("halamanUtama").style.display = "block";
+}
+</script>
+
+</body>
+</html>

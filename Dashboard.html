@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Dept Transformer</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    background: #f1f5f9;
+}
+
+.header {
+    background: #2563eb;
+    color: white;
+    padding: 18px 30px;
+    font-weight: bold;
+    font-size:25px;
+}
+
+.container { display: flex; }
+
+.sidebar {
+    width: 260px;
+    background: rgb(101, 136, 142);
+    min-height: 100vh;
+    padding: 20px;
+    
+}
+
+.menu a {
+    display: block;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    
+}
+
+.menu a:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.menu a.locked {
+    background: #e5e7eb;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* HIGHLIGHT MENU AKTIF */
+.menu a.menu-active {
+    background: #2563eb;
+    color: white;
+}
+
+.content { flex: 1; padding: 30px; }
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.tab-menu {
+    display: inline-flex;
+    background: #4eadac;
+    padding: 6px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.tab-menu span {
+    padding: 6px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+}
+
+.tab-active { background: #1752d179; }
+
+.monitoring {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.monitor-card {
+    background: #e0f2fe;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 130px 100px 100px 1.5fr 1.2fr 100px 100px;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* UBAH FONT DLL TABEL HASIL INPUT */
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 8px;
+    text-align: center;
+    color: black;
+}
+
+th { background: #4885ff; }
+
+.btn-edit { background: #facc15; border: none; cursor: pointer; }
+.btn-hapus { background: crimson; color: white; border: none; cursor: pointer; }
+
+/* ===== VALIDATION ERROR ===== */
+.input-error {
+    border: 2px solid crimson !important;
+    background: #ffe4e6;
+}
+
+/* ===== POPUP CUSTOM ===== */
+.popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2563eb;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.2);
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all .3s ease;
+}
+
+.popup.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.popup.error {
+    background: crimson;
+}
+
+.popup.success {
+    background: #16a34a;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="header">DASHBOARD DEPT TRANSFORMER</div>
+
+<!-- Judul Perusahaan -->
+<div class="header" style="font-family: 'Arial', serif;">
+    <span style="font-size:18px;">PT.</span> 
+    <span style="font-family:'Baskervlle Old Face', serif; font-size:25px;">Nikkatsu Electric Works</span>
+</div>
+
+<div class="container">
+<div class="sidebar">
+    <div class="menu">
+        <a data-bagian="quality">QUALITY</a>
+        <a data-bagian="winding">WINDING</a>
+        <a data-bagian="assembling1">ASSEMBLING I</a>
+        <a data-bagian="assembling2">ASSEMBLING II</a>
+        <a data-bagian="bigtransformer">BIG TRANSFORMER</a>
+        <a data-bagian="packing">PACKING</a>
+    </div>
+    <button onclick="logout()">LOGOUT</button>
+</div>
+
+<div class="content">
+<div class="card">
+
+<div style="background:#def2ff;padding:15px;border-radius:10px;margin-bottom:15px;">
+    <h3>SELAMAT DATANG 👋</h3>
+    <p>Anda login sebagai bagian <b><span id="bagianAktif"></span></b></p>
+</div>
+
+ 
+<div class="tab-menu">
+    <span id="tabDashboard" class="tab-active">DASHBOARD</span>
+    <span id="tabInput">INPUT</span>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardView">
+    <div class="monitoring">
+        <div class="monitor-card"><h2 id="total">0</h2><p>Total</p></div>
+        <div class="monitor-card"><h2 id="selesai">0</h2><p>Selesai</p></div>
+        <div class="monitor-card"><h2 id="proses">0</h2><p>Proses</p></div>
+    </div>
+</div>
+
+<!-- INPUT -->
+<div id="inputView" style="display:none">   
+<h3>Input Kerusakan Produk</h3>
+
+<div class="form-row">
+    <input type="date" id="tanggal">
+    <input type="text" id="type" placeholder="Type">
+    <input type="text" id="nolot" placeholder="No Lot">
+    <input type="text" id="masalah" placeholder="Masalah">
+    <input type="text" id="tindakan" placeholder="Tindakan">
+
+    <select id="status">
+        <option value="Selesai">Selesai</option>
+        <option value="Proses">Proses</option>
+    </select>
+
+    <button onclick="simpan()">💾 Simpan</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Tanggal</th><th>Type</th><th>No Lot</th>
+<th>Masalah</th><th>Tindakan</th><th>Status</th><th>Aksi</th>
+</tr>
+</thead>
+<tbody id="tabelData"></tbody>
+</table>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+/* =============================
+   KONFIGURASI STORAGE
+============================= */
+const storageKey = "kerusakan_data";
+let editIndex = null;
+let currentBagian = null;
+
+/* =============================
+   AMBIL ELEMEN HTML
+============================= */
+const tabDashboard = document.getElementById("tabDashboard");
+const tabInput = document.getElementById("tabInput");
+const dashboardView = document.getElementById("dashboardView");
+const inputView = document.getElementById("inputView");
+
+const tanggal = document.getElementById("tanggal");
+const type = document.getElementById("type");
+const nolot = document.getElementById("nolot");
+const masalah = document.getElementById("masalah");
+const tindakan = document.getElementById("tindakan");
+const status = document.getElementById("status");
+
+const tabel = document.getElementById("tabelData");
+const total = document.getElementById("total");
+const selesai = document.getElementById("selesai");
+const proses = document.getElementById("proses");
+
+const bagianAktif = document.getElementById("bagianAktif");
+
+/* =============================
+   FORMAT NAMA BAGIAN
+============================= */
+function formatBagian(b) {
+    return {
+        assembling1: "ASSEMBLING I",
+        assembling2: "ASSEMBLING II",
+        bigtransformer: "BIG TRANSFORMER",
+        winding: "WINDING",
+        quality: "QUALITY",
+        packing: "PACKING"
+    }[b] || b;
+}
+
+/* =============================
+   LOCK MENU SESUAI ROLE
+============================= */
+function lockMenu(bagian) {
+    document.querySelectorAll(".menu a").forEach(a => {
+        if (bagian !== "quality" && a.dataset.bagian !== bagian) {
+            a.classList.add("locked");
+        }
+    });
+}
+
+/* =============================
+   SIDEBAR MENU CLICK + HIGHLIGHT
+============================= */
+document.querySelectorAll(".menu a").forEach(menu => {
+    menu.addEventListener("click", () => {
+        currentBagian = menu.dataset.bagian; // set bagian aktif
+        bagianAktif.innerText = formatBagian(currentBagian);
+
+        // Hapus highlight menu lain
+        document.querySelectorAll(".menu a").forEach(a => a.classList.remove("menu-active"));
+        // Tambahkan highlight pada menu aktif
+        menu.classList.add("menu-active");
+
+        tampil();
+    });
+});
+
+/* =============================
+   TAB LOGIC
+============================= */
+tabDashboard.onclick = () => {
+    dashboardView.style.display = "block";
+    inputView.style.display = "none";
+    tabDashboard.classList.add("tab-active");
+    tabInput.classList.remove("tab-active");
+};
+
+tabInput.onclick = () => {
+    dashboardView.style.display = "none";
+    inputView.style.display = "block";
+    tabInput.classList.add("tab-active");
+    tabDashboard.classList.remove("tab-active");
+};
+
+/* =============================
+   SIMPAN DATA
+============================= */
+function simpan() {
+
+    // ===== VALIDASI INPUT =====
+    if (!currentBagian) {
+        alert("⚠️ Silakan pilih bagian terlebih dahulu!");
+        return;
+    }
+
+    if (!tanggal.value) {
+        alert("⚠️ Tanggal belum diisi!");
+        return;
+    }
+
+    if (!type.value.trim()) {
+        alert("⚠️ Type belum diisi!");
+        return;
+    }
+
+    if (!nolot.value.trim()) {
+        alert("⚠️ No Lot belum diisi!");
+        return;
+    }
+
+    if (!masalah.value.trim()) {
+        alert("⚠️ Masalah belum diisi!");
+        return;
+    }
+
+    if (!tindakan.value.trim()) {
+        alert("⚠️ Tindakan belum diisi!");
+        return;
+    }
+
+    if (!status.value) {
+        alert("⚠️ Status belum dipilih!");
+        return;
+    }
+
+    // ===== SIMPAN DATA =====
+    let data = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    let obj = {
+        tanggal: tanggal.value,
+        type: type.value,
+        nolot: nolot.value,
+        masalah: masalah.value,
+        tindakan: tindakan.value,
+        status: status.value,
+        bagian: currentBagian
+    };
+
+    editIndex !== null ? data[editIndex] = obj : data.push(obj);
+
+    localStorage.setItem(storageKey, JSON.stringify(data));
+    editIndex = null;
+    resetForm();
+    tampil();
+
+    alert("✅ Data berhasil disimpan");
+}
+
+/* =============================
+   TAMPILKAN TABEL & MONITORING
+============================= */
+function tampil() {
+    let data = JSON.parse(localStorage.getItem(storageKey)) || [];
+    tabel.innerHTML = "";
+
+    let s = 0, p = 0;
+
+    data.forEach((d, i) => {
+        // Filter: hanya tampilkan data sesuai currentBagian
+        if (!currentBagian) return;
+        if (d.bagian !== currentBagian) return;
+
+        d.status === "Selesai" ? s++ : p++;
+
+        tabel.innerHTML += `
+        <tr>
+            <td>${d.tanggal}</td>
+            <td>${d.type}</td>
+            <td>${d.nolot}</td>
+            <td>${d.masalah}</td>
+            <td>${d.tindakan}</td>
+            <td>${d.status}</td>
+            <td>
+                <button onclick="edit(${i})">✏️</button>
+                <button class="btn-hapus" onclick="hapus(${i})">🗑️</button>
+
+            </td>
+        </tr>`;
+    });
+
+    total.innerText = s + p;
+    selesai.innerText = s;
+    proses.innerText = p;
+}
+
+/* =============================
+   EDIT DATA
+============================= */
+function edit(i) {
+    let d = JSON.parse(localStorage.getItem(storageKey))[i];
+    tanggal.value = d.tanggal;
+    type.value = d.type;
+    nolot.value = d.nolot;
+    masalah.value = d.masalah;
+    tindakan.value = d.tindakan;
+    status.value = d.status;
+    currentBagian = d.bagian; // set bagian saat edit
+    editIndex = i;
+    tabInput.click();
+
+    // Highlight menu sesuai bagian saat edit
+    document.querySelectorAll(".menu a").forEach(a => a.classList.remove("menu-active"));
+    document.querySelector(`.menu a[data-bagian='${currentBagian}']`).classList.add("menu-active");
+}
+
+/* =============================
+   HAPUS DATA
+============================= */
+function hapus(i) {
+    let data = JSON.parse(localStorage.getItem(storageKey));
+    data.splice(i, 1);
+    localStorage.setItem(storageKey, JSON.stringify(data));
+    tampil();
+}
+
+/* =============================
+   RESET FORM
+============================= */
+function resetForm() {
+    tanggal.value = "";
+    type.value = "";
+    nolot.value = "";
+    masalah.value = "";
+    tindakan.value = "";
+    status.value = "Proses";
+}
+
+/* =============================
+   SESSION LOGIN
+============================= */
+window.onload = () => {
+    let b = localStorage.getItem("bagian");
+    if (!b) {
+        location = "login.html";
+        return;
+    }
+    currentBagian = b;
+    bagianAktif.innerText = formatBagian(currentBagian);
+    lockMenu(b);
+
+    // Highlight menu sesuai bagian login
+    document.querySelectorAll(".menu a").forEach(a => a.classList.remove("menu-active"));
+    document.querySelector(`.menu a[data-bagian='${currentBagian}']`)?.classList.add("menu-active");
+
+    tampil();
+};
+
+/* =============================
+   LOGOUT
+============================= */
+function logout() {
+    localStorage.removeItem("bagian"); // hanya logout
+    location = "login.html";
+}
+</script>
+
+</body>
+</html>

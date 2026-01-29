@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Big Transformer - Dept Transformer</title>
+
+<style>
+/* =====================================================
+   STYLE DASAR HALAMAN
+===================================================== */
+body{
+    margin:0;
+    font-family:'Times New Roman', Times, serif;
+    background:#f1f5f9;
+}
+
+/* =====================================================
+   HEADER ATAS
+===================================================== */
+.header{
+    background:#2563eb;
+    color:white;
+    padding:18px 30px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* =====================================================
+   LAYOUT UTAMA
+===================================================== */
+.container{display:flex}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+.sidebar{
+    width:260px;
+    background:rgba(107,106,106,0.6);
+    min-height:100vh;
+    padding:20px;
+}
+
+.menu a{
+    display:block;
+    padding:10px;
+    margin-bottom:8px;
+    border-radius:6px;
+    text-decoration:none;
+    color:#1e293b;
+}
+
+.menu a:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.locked{
+    background:#e5e7eb;
+    color:#9ca3af;
+    pointer-events:none;
+}
+
+/* =====================================================
+   KONTEN UTAMA
+===================================================== */
+.content{
+    flex:1;
+    padding:30px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+}
+
+/* =====================================================
+   TAB DASHBOARD & INPUT
+===================================================== */
+.tab-menu{
+    display:inline-flex;
+    background:#e5e7eb;
+    padding:6px;
+    border-radius:10px;
+    margin-bottom:20px;
+    gap:5px;
+}
+
+.tab-menu span{
+    padding:8px 18px;
+    cursor:pointer;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.tab-active{
+    background:#2563eb;
+    color:white;
+}
+
+/* =====================================================
+   FORM INPUT SEJAJAR KE KANAN
+===================================================== */
+.form-row{
+    display:grid;
+    grid-template-columns:
+        130px
+        110px
+        110px
+        1.5fr
+        1.5fr
+        120px
+        110px;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.form-row input,
+.form-row select{
+    padding:8px;
+    font-size:13px;
+}
+
+.form-row button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* =====================================================
+   TABEL DATA
+===================================================== */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th,td{
+    border:1px solid #cbd5e1;
+    padding:8px;
+    text-align:center;
+    font-size:13px;
+}
+
+th{background:#e5e7eb}
+
+.btn-edit{
+    background:#facc15;
+    border:none;
+    padding:5px 8px;
+    cursor:pointer;
+}
+
+.btn-hapus{
+    background:crimson;
+    color:white;
+    border:none;
+    padding:5px 8px;
+    cursor:pointer;
+}
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+.logout button{
+    margin-top:20px;
+    padding:10px 16px;
+    background:crimson;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<div class="header">DASHBOARD DEPT TRANSFORMER</div>
+<div class="header" style="font-style:italic;">PT. Nikkatsu Electric Works</div>
+
+<div class="container">
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
+    <div class="menu">
+        <a href="winding.html" data-bagian="winding">Winding</a>
+        <a href="bigtransformer.html" data-bagian="bigtransformer">Big Transformer</a>
+        <a href="#" data-bagian="assembling1">Assembling I</a>
+        <a href="#" data-bagian="assembling2">Assembling II</a>
+        <a href="#" data-bagian="quality">Quality</a>
+        <a href="#" data-bagian="packing">Packing</a>
+    </div>
+
+    <div class="logout">
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<!-- ================= CONTENT ================= -->
+<div class="content">
+<div class="card">
+
+<!-- ===== TAB MENU ===== -->
+<div class="tab-menu">
+    <span id="tabDashboard" class="tab-active" onclick="showDashboard()">DASHBOARD</span>
+    <span id="tabInput" onclick="showInput()">BIG TRAN/ INPUT</span>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboardView">
+    <h3>Selamat Datang 👋</h3>
+    <p>Anda login sebagai <b>Bagian Big Transformer</b></p>
+</div>
+
+<!-- ===== INPUT ===== -->
+<div id="inputView" style="display:none">
+
+<h3>REKAPITULASI KERUSAKAN PROSES BIG TRANSFORMER</h3>
+<p><b>Departemen</b> : Transformer</p>
+<p><b>Bagian</b> : Big Transformer</p>
+<p><b>Bulan / Tahun</b> : Januari 2026</p>
+
+<hr>
+
+<div class="form-row">
+    <input type="date" id="tanggal">
+    <input type="text" id="type" placeholder="Type">
+    <input type="text" id="nolot" placeholder="No Lot">
+    <input type="text" id="tindakan" placeholder="Tindakan">
+    <input type="text" id="masalah" placeholder="Masalah">
+    <select id="status">
+        <option>Selesai</option>
+        <option>Proses</option>
+    </select>
+    <button onclick="simpan()">💾 Simpan</button>
+</div>
+
+<table>
+<thead>
+<tr>
+    <th>Tanggal</th>
+    <th>Type</th>
+    <th>No Lot</th>
+    <th>Tindakan</th>
+    <th>Masalah</th>
+    <th>Status</th>
+    <th>Aksi</th>
+</tr>
+</thead>
+<tbody id="tabelData"></tbody>
+</table>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+let editRow=null;
+
+/* ===== SIMPAN DATA ===== */
+function simpan(){
+if(editRow){
+    editRow.cells[0].innerText=tanggal.value;
+    editRow.cells[1].innerText=type.value;
+    editRow.cells[2].innerText=nolot.value;
+    editRow.cells[3].innerText=tindakan.value;
+    editRow.cells[4].innerText=masalah.value;
+    editRow.cells[5].innerText=status.value;
+    editRow=null;
+}else{
+    let row=tabelData.insertRow();
+    row.innerHTML=`
+    <td>${tanggal.value}</td>
+    <td>${type.value}</td>
+    <td>${nolot.value}</td>
+    <td>${tindakan.value}</td>
+    <td>${masalah.value}</td>
+    <td>${status.value}</td>
+    <td>
+        <button class="btn-edit" onclick="edit(this)">✏️</button>
+        <button class="btn-hapus" onclick="hapus(this)">🗑️</button>
+    </td>`;
+}
+tanggal.value=type.value=nolot.value=tindakan.value=masalah.value="";
+}
+
+/* ===== EDIT DATA ===== */
+function edit(btn){
+editRow=btn.parentElement.parentElement;
+tanggal.value=editRow.cells[0].innerText;
+type.value=editRow.cells[1].innerText;
+nolot.value=editRow.cells[2].innerText;
+tindakan.value=editRow.cells[3].innerText;
+masalah.value=editRow.cells[4].innerText;
+status.value=editRow.cells[5].innerText;
+}
+
+/* ===== HAPUS DATA ===== */
+function hapus(btn){
+if(confirm("Hapus data ini?")){
+    btn.parentElement.parentElement.remove();
+}
+}
+
+/* ===== TAB ===== */
+function showDashboard(){
+dashboardView.style.display="block";
+inputView.style.display="none";
+tabDashboard.classList.add("tab-active");
+tabInput.classList.remove("tab-active");
+}
+
+function showInput(){
+dashboardView.style.display="none";
+inputView.style.display="block";
+tabInput.classList.add("tab-active");
+tabDashboard.classList.remove("tab-active");
+}
+
+/* ===== LOCK MENU ===== */
+let bagian=localStorage.getItem("bagian");
+document.querySelectorAll(".menu a").forEach(a=>{
+if(a.dataset.bagian!==bagian)a.classList.add("locked");
+});
+
+/* ===== LOGOUT ===== */
+function logout(){
+localStorage.clear();
+location.href="login.html";
+}
+</script>
+
+</body>
+</html>
